@@ -5,7 +5,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
-import truthunfold.Constant.*;
+import truthunfold.Authentication.*;
 
 //import java.util.Scanner;
 
@@ -31,10 +31,10 @@ public class Email {
 		// String host = "localhost";
 
 		// mail id
-		final String username = Constant.SMTP_USERNAME;
+		final String username = Authentication.SMTP_USERNAME;
 
 		// correct password for gmail id
-		final String password = Constant.SMTP_PASSWORD;
+		final String password = Authentication.SMTP_PASSWORD;
 
 		System.out.println("TLSEmail Start");
 		// Get the session object
@@ -43,10 +43,10 @@ public class Email {
 		Properties properties = System.getProperties();
 
 		// Setup mail server
-		properties.put("mail.smtp.host", Constant.SMTP_HOST);
+		properties.put("mail.smtp.host", Authentication.SMTP_HOST);
 
 		// SSL Port
-		properties.put("mail.smtp.port", Constant.SMTP_PORT);
+		properties.put("mail.smtp.port", Authentication.SMTP_PORT);
 
 		// enable authentication
 		properties.put("mail.smtp.auth", "true");
@@ -94,7 +94,7 @@ public class Email {
 		// String password = input.nextLine();
 
 		// change accordingly
-		String to = Constant.CONTACT_US_EMAIL;
+		String to = Authentication.CONTACT_US_EMAIL;
 
 		// change accordingly
 		String from = mailFrom;
@@ -106,10 +106,10 @@ public class Email {
 		// String host = "localhost";
 
 		// mail id
-		final String username = Constant.SMTP_USERNAME;
+		final String username = Authentication.SMTP_USERNAME;
 
 		// correct password for gmail id
-		final String password = Constant.SMTP_PASSWORD;
+		final String password = Authentication.SMTP_PASSWORD;
 
 		System.out.println("TLSEmail Start");
 		// Get the session object
@@ -118,10 +118,10 @@ public class Email {
 		Properties properties = System.getProperties();
 
 		// Setup mail server
-		properties.put("mail.smtp.host", Constant.SMTP_HOST);
+		properties.put("mail.smtp.host", Authentication.SMTP_HOST);
 
 		// SSL Port
-		properties.put("mail.smtp.port", Constant.SMTP_PORT);
+		properties.put("mail.smtp.port", Authentication.SMTP_PORT);
 
 		// enable authentication
 		properties.put("mail.smtp.auth", "true");
