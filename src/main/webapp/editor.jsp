@@ -32,14 +32,12 @@
 
 
 </head>
-<body>
+<body onload="TodayDate()">
 	<jsp:include page="headerBO.jsp" />
 
 	<%
-	
 	String alertArticle = (String) session.getAttribute("alertArticle");
 	String articleTitle = (String) session.getAttribute("articleTitle");
-
 	%>
 	<div id="main">
 
@@ -59,7 +57,7 @@
 
 
 				<p>Add a new Article:</p>
-				<form action="ArticleServletBO" method="post">
+				<%-- <form action="ArticleServletBO" method="post">
 					<div class="form_settings">
 						<p>
 							<span>Title</span>
@@ -98,6 +96,54 @@
 								name="contact_submitted" value="add now" />
 						</p>
 					</div>
+				</form> --%>
+
+				<form action="ArticleImageUploadServlet" method="post"
+					enctype="multipart/form-data">
+					<div class="form_settings">
+						<input type="hidden" name="command" value="UPLOAD_ARTICLE" />
+
+						<p>
+							<span>Title</span>
+							<textarea id="articleTextarea" rows="2" name="title" required
+								style="font-size: 1.5em"></textarea>
+						</p>
+						<P>
+							<span>Topic</span><br /> <select name="topic">
+								<c:forEach items="${topics}" var="topic">
+									<option value="${topic.name}">${topic.name}</option>
+								</c:forEach>
+							</select>
+						</P>
+
+						<p>
+							<span>Select an image</span><br /> <input type="file"
+								name="articleImage" multiple>
+						</p>
+						<p>
+							<span>Date added</span><br /> <input type="date" name="date" id="date_added"
+								value="" min="2000-01-01" required></input>
+						</p>
+						<p>
+							<span>Head</span>
+							<textarea id="articleTextarea" rows="3" name="head" required
+								style="font-size: 1.2em"></textarea>
+						</p>
+						<p>
+							<span>Lead</span>
+							<textarea id="articleTextarea" rows="3" name="lead" required
+								style="font-size: 1.2em"></textarea>
+						</p>
+						<p>
+							<span>Body</span>
+							<textarea id="editor" name="body"></textarea>
+						</p>
+
+						<p style="padding-top: 15px">
+							<span>&nbsp;</span><input class="submit" type="submit"
+								name="article_submitted" value="add article" />
+						</p>
+					</div>
 				</form>
 
 			</div>
@@ -117,7 +163,7 @@
 	<script>
 				ClassicEditor
 			    .create( document.querySelector( '#editor' ), {
-			        toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+			        toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
 			        heading: {
 			            options: [
 			            	 { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
@@ -130,6 +176,18 @@
 			    .catch( error => {
 			        console.log( error );
 			    } );
+				</script>
+
+	<script>
+				function TodayDate(){
+					
+					var dateControl = document.getElementById("date_added");
+					var today = new Date();
+					var date = today.getFullYear()+'-'+("0" + (today.getMonth() + 1)).slice(-2)+'-'+today.getDate();
+					dateControl.value = date;
+					console.log(date);
+					
+													}
 				</script>
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>

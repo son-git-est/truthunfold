@@ -65,7 +65,7 @@ pageContext.setAttribute("articleTopic", articleTopic);
 		<div id="site_content">
 			<div id="content_full">
 
-				<h1>Search results for ${search_keyword}</h1>
+				<h1>Search results for: ${search_keyword}</h1>
 
 
 				<c:forEach items="${articles}" var="article">

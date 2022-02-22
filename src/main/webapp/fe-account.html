@@ -1,0 +1,51 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>User Login</title>
+<script type="text/javascript" src="script/script.js"></script>
+<link rel="stylesheet" type="text/css" href="style/style.css"
+	title="style" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+	crossorigin="anonymous" />
+
+
+</head>
+<body>
+
+<div include-html="fe-header.html"></div>
+	<div id="main">
+		<div id="site_content">
+			<div id="content">
+
+				<h1>Sign In Here</h1>
+
+				<p>Please enter your account details here:</p>
+				<form action="#" method="post">
+					<div class="form_settings">
+						<p>
+							<span>User Name</span><input class="contact" type="text"
+								name="username" id="username" value="" />
+						</p>
+						<p>
+							<span>Password</span><input class="contact" type="password"
+								name="password" id="password" value="" />
+						</p>
+						<p style="padding-top: 15px">
+							<span>&nbsp;</span><input class="submit" type="submit"
+								name="contact_submitted" value="let's go" onclick="return validateUser();"/>
+						</p>
+					</div>
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+<div include-html="fe-footer.html"></div>
+<script>includeHTML();</script>
+</body>
+</html>

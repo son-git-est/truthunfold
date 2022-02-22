@@ -8,5 +8,7 @@ public class Constant {
 	public static int TOTAL_PAGES;
 
 	public static int CURRENT_PAGE;
+	
+	public static String IMAGE_PATH = "C:\\Users\\sonph\\git\\project\\truthUnfold\\src\\main\\webapp\\image\\";
 
 }

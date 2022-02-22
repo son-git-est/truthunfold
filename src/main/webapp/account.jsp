@@ -90,7 +90,12 @@
 						</p>
 						<p>
 							<span>Password</span><input class="contact" type="password"
-								name="password" value="" required />
+								name="password" id="password" value="" required />
+						</p>
+						<p>
+							<span>Confirm Password</span><input class="contact"
+								type="password" name="confirmPassword" id="confirmPassword"
+								value="" required />
 						</p>
 						<p>
 							<span>Address</span><input class="contact" type="text"
@@ -116,7 +121,8 @@
 						</p>
 						<p style="padding-top: 15px">
 							<span>&nbsp;</span><input class="submit" type="submit"
-								name="contact_submitted" value="create account" />
+								name="contact_submitted" value="create account"
+								onclick="return Validate()" />
 						</p>
 					</div>
 				</form>
@@ -129,5 +135,17 @@
 		</div>
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
+
+	<script>
+		function Validate() {
+			if (document.getElementById('password').value == document
+					.getElementById('confirmPassword').value) {
+				return true;
+			} else {
+				alert('Sorry, repeat password does not match');
+				return false;
+			}
+		}
+	</script>
 </body>
 </html>

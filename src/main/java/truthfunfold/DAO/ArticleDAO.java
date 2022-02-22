@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -271,6 +272,57 @@ public class ArticleDAO {
 		return false;
 	}
 
+	public int addArticleWithImage(String title, String topic, String date, String head, String lead, String body)
+			throws SQLException {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			String sql = "INSERT IGNORE INTO article (`title`, `topic`, `date`, `head`,`lead`, `body`) VALUES (?, ?, ?,?, ?, ?)";
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, title);
+			ps.setString(2, topic);
+			ps.setString(3, date);
+			ps.setString(4, head);
+			ps.setString(5, lead);
+			ps.setString(6, body);
+
+			ps.executeUpdate();
+
+			rs = ps.getGeneratedKeys();
+
+			if (rs.next()) {
+				int articleId = rs.getInt(1);
+				return articleId;
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		} finally { // must be closed after all queries finish to prevent overwhelming server
+
+			if (ps != null) {
+				ps.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+			if (rs != null) {
+				rs.close();
+			}
+
+		}
+
+		return 0;
+	}
+
 	private void close(Connection conn, PreparedStatement pstm, ResultSet rs) {
 
 		try {
@@ -410,7 +462,7 @@ public class ArticleDAO {
 
 		List<Article> articles = new ArrayList<Article>();
 
-		keyword = "%" + keyword + "%";
+		// keyword = "'%" + keyword + "%'";
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
@@ -418,22 +470,27 @@ public class ArticleDAO {
 		try {
 
 			conn = DBUtil.makeConnection();
-
+			currentPage = (currentPage - 1) * Constant.ARTICLES_PER_PAGE;
 			// currentPage = (currentPage - 1) * Constant.ARTICLES_PER_PAGE;
 
 			System.out.println("conn " + conn);
-			String sql = "SELECT * FROM article WHERE article.body LIKE ? ORDER BY date DESC LIMIT ? OFFSET ?";
+			System.out.println(Constant.ARTICLES_PER_PAGE);
+			System.out.println(currentPage);
+			String sql = "SELECT * FROM article WHERE `body` LIKE ? OR `title` LIKE ? OR `lead` LIKE ? OR `head` LIKE ? ORDER BY date DESC LIMIT ? OFFSET ?";
 
 			pstm = conn.prepareStatement(sql);
 			// pstm.setInt(1, Constant.ARTICLES_PER_PAGE);
 			// pstm.setInt(2, currentPage);
-			pstm.setString(1, keyword);
-			pstm.setInt(2, Constant.ARTICLES_PER_PAGE);
-			pstm.setInt(3, currentPage);
+			pstm.setString(1, "%" + keyword + "%");
+			pstm.setString(2, "%" + keyword + "%");
+			pstm.setString(3, "%" + keyword + "%");
+			pstm.setString(4, "%" + keyword + "%");
+			pstm.setInt(5, Constant.ARTICLES_PER_PAGE);
+			pstm.setInt(6, currentPage);
 
 			rs = pstm.executeQuery();
 
-			System.out.println("sql" + sql);
+			// System.out.println("sql" + sql);
 			while (rs.next()) {
 
 				int id = rs.getInt("id");
@@ -460,13 +517,13 @@ public class ArticleDAO {
 
 	public int getTotalArticlesByKeyword(String keyword) throws SQLException {
 
-		List<Article> articles = new ArrayList<Article>();
+		// List<Article> articles = new ArrayList<Article>();
 
-		keyword = "%" + keyword + "%";
+		// keyword = "'%" + keyword + "%'";
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
-
+		System.out.println(keyword);
 		try {
 
 			conn = DBUtil.makeConnection();
@@ -474,21 +531,25 @@ public class ArticleDAO {
 			// currentPage = (currentPage - 1) * Constant.ARTICLES_PER_PAGE;
 
 			// System.out.println("conn " + conn);
-			String sql = "SELECT COUNT(*) FROM article WHERE article.body LIKE ?";
+			String sql = "SELECT COUNT(*) FROM article WHERE `body` LIKE ? OR `title` LIKE ? OR `lead` LIKE ? OR `head` LIKE ?";
 
 			pstm = conn.prepareStatement(sql);
 			// pstm.setInt(1, Constant.ARTICLES_PER_PAGE);
 			// pstm.setInt(2, currentPage);
-			pstm.setString(1, keyword);
+			pstm.setString(1, "%" + keyword + "%");
+			pstm.setString(2, "%" + keyword + "%");
+			pstm.setString(3, "%" + keyword + "%");
+			pstm.setString(4, "%" + keyword + "%");
 
 			rs = pstm.executeQuery();
 
 			// System.out.println("sql" + sql);
 			if (rs.next()) {
 
-				int totalPage = rs.getInt(1);
+				int totalArticles = rs.getInt(1);
 
-				return totalPage;
+				System.out.println(totalArticles);
+				return totalArticles;
 			}
 
 			return 0;

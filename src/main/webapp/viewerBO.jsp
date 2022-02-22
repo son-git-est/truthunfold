@@ -13,11 +13,21 @@
 <body>
 
 
-
-	<jsp:include page="header.jsp" />
+	<jsp:include page="headerBO.jsp" />
 	<div id="main">
 		<div id="site_content">
 			<div id="content_full">
+
+				<br />
+				<form action="ArticleImageUploadServlet" method="post"
+					enctype="multipart/form-data">
+					<label>Upload a new image:</label><br /> <input type="hidden"
+						name="command" value="UPLOAD_IMAGE"> <input type="hidden"
+						name="articleId" value="${article.id}"> <input type="file"
+						id="articleImage" name="articleImage" required> <input type="submit"
+						value="upload">
+				</form>
+
 
 				<h3>${article.title}</h3>
 				<h5>${article.date}</h5>
@@ -28,13 +38,8 @@
 						style="float: right; height: 300px;">${article.lead}</p>
 				${article.body }
 
-
-
 			</div>
-
-
 		</div>
-
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>
