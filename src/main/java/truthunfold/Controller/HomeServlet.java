@@ -1,6 +1,7 @@
 package truthunfold.Controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import truthfunfold.DAO.ArticleDAO;
 import truthfunfold.DAO.Email;
 import truthunfold.Entity.Article;
+import truthunfold.Entity.Reader;
 import truthunfold.Entity.Topic;
 
 /**
@@ -34,10 +36,24 @@ public class HomeServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
+			List<Article> articlesSide = new ArrayList<Article>();
+			Reader me = (Reader) request.getSession().getAttribute("reader");
+			if (me != null) {
 
-			List<Article> articlesSide = articleDAO.getLatestArticles();
+				int id = me.getId();
+				articlesSide = articleDAO.getRecommendedArticles(id);
+
+				if (articlesSide.size() < 3) {
+					articlesSide = articleDAO.getLatestArticles();
+				}
+
+			} else {
+
+				articlesSide = articleDAO.getLatestArticles();
+
+			}
 			List<Topic> topics = articleDAO.getAllTopics();
-
+			
 			request.setAttribute("articlesSide", articlesSide);
 			request.setAttribute("topics", topics);
 

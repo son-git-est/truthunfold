@@ -11,6 +11,7 @@ import java.util.List;
 import truthunfold.Constant.*;
 import truthunfold.DB.DBUtil;
 import truthunfold.Entity.Article;
+import truthunfold.Entity.Comment;
 import truthunfold.Entity.Topic;
 
 public class ArticleDAO {
@@ -149,7 +150,7 @@ public class ArticleDAO {
 
 			System.out.println("conn " + conn);
 
-			String sql = "SELECT * FROM article ORDER BY date DESC LIMIT 3";
+			String sql = "SELECT * FROM article ORDER BY date DESC LIMIT 5";
 
 			pstm = conn.prepareStatement(sql);
 			System.out.println("sql " + sql);
@@ -560,4 +561,283 @@ public class ArticleDAO {
 		}
 
 	}
+
+	public void deleteTopic(String topic) throws SQLException {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement pstm = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			String sql = "DELETE FROM topic WHERE name = ?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, topic);
+
+			ps.executeUpdate();
+
+			sql = "DELETE FROM article WHERE topic = ?";
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, topic);
+
+			pstm.executeUpdate();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		} finally { // must be closed after all queries finish to prevent overwhelming server
+
+			if (ps != null) {
+				ps.close();
+			}
+			if (pstm != null) {
+				pstm.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+
+		}
+
+	}
+
+	public void addnewTopic(String topic) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			String sql = "INSERT IGNORE INTO topic (`name`) VALUES (?)";
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, topic);
+
+			ps.executeUpdate();
+
+		} catch (
+
+		Exception e) {
+
+			e.printStackTrace();
+
+		} finally { // must be closed after all queries finish to prevent overwhelming server
+
+			if (ps != null) {
+				ps.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+			if (rs != null) {
+				rs.close();
+			}
+
+		}
+
+	}
+	
+	public void editTopic(int id, String topic) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String sql = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			sql = "UPDATE topic SET `name` = ? WHERE `id` = ?";
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			
+			ps.setString(1, topic);
+
+			ps.executeUpdate();
+
+		} catch (
+
+		Exception e) {
+
+			e.printStackTrace();
+
+		} finally { // must be closed after all queries finish to prevent overwhelming server
+
+			if (ps != null) {
+				ps.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+			if (rs != null) {
+				rs.close();
+			}
+
+		}
+
+	}
+
+	public void addComment(int id, String name, String body) throws SQLException {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			String sql = "INSERT INTO comment (`article_id`, `name`, `body`) VALUES (?, ?, ?)";
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, id);
+			ps.setString(2, name);
+			ps.setString(3, body);
+
+			ps.executeUpdate();
+
+		} catch (
+
+		Exception e) {
+
+			e.printStackTrace();
+
+		} finally { // must be closed after all queries finish to prevent overwhelming server
+
+			if (ps != null) {
+				ps.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+			if (rs != null) {
+				rs.close();
+			}
+
+		}
+	}
+
+	public List<Comment> getComment(int id) throws SQLException {
+
+		List<Comment> comments = new ArrayList<Comment>();
+
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			String sql = "SELECT * FROM comment WHERE article_id = ?";
+
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, id);
+
+			rs = pstm.executeQuery();
+
+			while (rs.next()) {
+
+				String name = rs.getString("name");
+				String body = rs.getString("body");
+				Comment comment = new Comment(name, body);
+
+				comments.add(comment);
+			}
+
+		} finally {
+
+			close(conn, pstm, rs);
+		}
+
+		return comments;
+	}
+
+	public List<Article> getRecommendedArticles(int readerId) throws SQLException {
+
+		List<Article> articles = new ArrayList<Article>();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		ResultSet rst = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			System.out.println("conn " + conn);
+
+			String sql = "SELECT topic, COUNT(topic) FROM `order`\r\n"
+					+ "LEFT JOIN order_detail AS od ON `order`.id = od.order_id\r\n"
+					+ "LEFT JOIN article AS ar ON ar.id = od.article_id\r\n" + "WHERE `order`.reader_id = ?\r\n"
+					+ "GROUP BY topic\r\n" + "ORDER BY COUNT(topic) DESC LIMIT 1";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, readerId);
+			rs = ps.executeQuery();
+
+			String topicF = null;
+
+			if (rs.next()) {
+
+				topicF = rs.getString("topic");
+				System.out.println(topicF);
+			}
+
+			if (topicF != null) {
+
+				sql = "SELECT * FROM article WHERE article.topic = ? ORDER BY date DESC LIMIT 5";
+
+				pstm = conn.prepareStatement(sql);
+				pstm.setString(1, topicF);
+
+				rst = pstm.executeQuery();
+
+				while (rst.next()) {
+
+					int id = rst.getInt("id");
+					String title = rst.getString("title");
+					String topic = rst.getString("topic");
+					String date = rst.getString("date");
+					String head = rst.getString("head");
+					String lead = rst.getString("lead");
+					String body = rst.getString("body");
+					int visit = rst.getInt("visit");
+
+					Article article = new Article(id, title, topic, date, head, lead, body, visit);
+					articles.add(article);
+				}
+
+				System.out.println(articles.size());
+				return articles;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			close(conn, pstm, rs);
+			if (rst != null) {
+				rst.close();
+
+			}
+			if (ps != null) {
+				ps.close();
+
+			}
+
+		}
+
+		return articles;
+
+	}
+
 }

@@ -30,14 +30,14 @@
 			<div id="content_full">
 
 				<h1>List of topics</h1>
-				<form action="ArticleServletBO?action=add_topic" method="get">
-					<table style="max-width: 100%">
+				<form action="ArticleServletBO" method="get">
+					<table style="table-layout: fixed; width: 100%">
 						<tr>
 
 							<th>Topic Name</th>
 							<th>Number of Articles</th>
 							<th>Total Visits</th>
-							<th colspan="4">Actions</th>
+							<th colspan="2">Actions</th>
 						</tr>
 
 						<c:forEach items="${topics}" var="topic">
@@ -46,11 +46,13 @@
 								<td>${topic.name}</td>
 								<td>${topic.quantity}</td>
 								<td>${topic.visit}</td>
+
 								<td><a href="ArticleServletBO?articleTopic=${topic.name}">view
 										articles</a></td>
-								<td><a href="#">update name</a></td>
-								<td><a href="#">show/hide topic</a></td>
-								<td><a href="#">delete topics & articles</a></td>
+								
+								<td><a
+									href="ArticleServletBO?action=delete_topic&articleTopic=${topic.name}">delete
+										topic &amp; articles</a></td>
 
 							</tr>
 
@@ -58,7 +60,8 @@
 
 						<tr>
 							<td colspan="1"><input type="text" name="topicName"
-								placeholder="new topic here"></td>
+								placeholder="new topic here" required></td>
+							<td><input type="hidden" name="action" value="add_topic"></td>
 							<td colspan="2"></td>
 							<td><input type="submit" value="add new"></td>
 
@@ -66,6 +69,7 @@
 
 					</table>
 				</form>
+
 
 
 			</div>

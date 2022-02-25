@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import truthunfold.Constant.*;
 import truthfunfold.DAO.ArticleDAO;
 import truthunfold.Entity.Article;
+import truthunfold.Entity.Comment;
 import truthunfold.Entity.Topic;
 
 /**
@@ -56,7 +57,10 @@ public class ArticleServlet extends HttpServlet {
 				int id = Integer.parseInt(articleId);
 
 				article = articleDAO.getArticle(id);
+				List<Comment> comments = articleDAO.getComment(id);
+
 				request.setAttribute("article", article);
+				request.setAttribute("comments", comments);
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/viewer.jsp");
 				dispatcher.forward(request, response);
 			}
@@ -152,5 +156,22 @@ public class ArticleServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		String action = request.getParameter("action");
+		if (action != null && action.equals("add_comment")) {
+			try {
+				String name = request.getParameter("commentName");
+				String body = request.getParameter("commentBody");
+				String articleId = request.getParameter("articleId");
+				int id = Integer.parseInt(articleId);
+
+				articleDAO.addComment(id, name, body);
+
+				response.sendRedirect("ArticleServlet?articleId=" + id);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 }

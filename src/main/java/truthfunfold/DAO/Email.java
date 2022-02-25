@@ -6,6 +6,7 @@ import javax.mail.internet.*;
 import javax.activation.*;
 
 import truthunfold.Authentication.*;
+import truthunfold.Constant.EmailTemplate;
 
 //import java.util.Scanner;
 
@@ -23,9 +24,10 @@ public class Email {
 		// change accordingly
 		String from = "truthUnfold";
 
-		String subject = "Hello";
-		String body = "<h3>This is the recovery email! Please use this token to set up a new password.</h3><br/>"
-				+ "<h1>" + token + "</h1>";
+		String subject = "Password Reset for Truth Unfold";
+		String body = EmailTemplate.recoveryTemplate
+				+ "<h3 style='text-align: center;'>Recovery Token: "
+				+ token + "</h3>";
 
 		// or IP address
 		// String host = "localhost";

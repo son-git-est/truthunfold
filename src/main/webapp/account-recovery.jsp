@@ -60,24 +60,29 @@
 				<form action="AccountRecoveryServlet" method="post">
 					<div class="form_settings">
 						<p>
-							<span>Email</span><input class="contact" type="text" name="email"
-								value="" />
+							<span>Email Address</span><input class="contact" type="text"
+								name="email" value="" id="email" />
 						</p>
 						<p>
-							<span>Token</span><input class="contact" type="text" name="token"
-								value="" />
+							<span>Recovery Token</span><input class="contact" type="text"
+								name="token" value="" id="token" />
 						</p>
 
 						<p>
 							<span>New Password</span><input class="contact" type="password"
-								name="password" value="" />
+								name="password" id="password" value="" />
+						</p>
+						<p>
+							<span>Confirm Password</span><input class="contact"
+								type="password" name="password" id="confirmPassword" value="" />
 						</p>
 
 
 
 						<p style="padding-top: 15px">
 							<span>&nbsp;</span><input class="submit" type="submit"
-								name="contact_submitted" value="set password" />
+								name="contact_submitted" value="set password"
+								onclick='return validatePassword()' />
 						</p>
 					</div>
 				</form>
@@ -91,5 +96,33 @@
 		</div>
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
+
+	<script>
+		function validatePassword() {
+
+			let email = document.getElementById('email').value;
+			let token = document.getElementById('token').value;
+			let password = document.getElementById('password').value;
+			let confirmPassword = document.getElementById('confirmPassword').value;
+
+			if (!email || !token || !password || !confirmPassword) {
+
+				alert('Please fill in the blank field!');
+				return false;
+			}
+
+			if (password === confirmPassword) {
+
+				return true;
+
+			} else {
+				alert('Password does not match');
+				
+				return false;
+
+			}
+
+		}
+	</script>
 </body>
 </html>

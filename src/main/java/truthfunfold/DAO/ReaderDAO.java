@@ -395,4 +395,60 @@ public class ReaderDAO {
 		}
 
 	}
+
+	public Reader getReader(int readerId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = DBUtil.makeConnection();
+
+			String sql = "SELECT * FROM reader WHERE id = ?";
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, readerId);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				int it = rs.getInt("id");
+				String firstName = rs.getString("first_name");
+				String lastName = rs.getString("last_name");
+				String userName = rs.getString("user_name");
+				String email = rs.getString("email");
+				String password = rs.getString("password");
+				String phone = rs.getString("phone");
+				String address = rs.getString("address");
+				String country = rs.getString("country");
+				int postCode = rs.getInt("post_code");
+
+				Reader reader = new Reader(it, firstName, lastName, email, phone, userName, password, address, country,
+						postCode);
+				return reader;
+			}
+
+			return null;
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+
+		}
+
+		return null;
+
+	}
 }

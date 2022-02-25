@@ -11,6 +11,9 @@
 
 
 <%
+String me = (String) session.getAttribute("me");
+pageContext.setAttribute("me", me);
+
 String articleTopic = request.getParameter("articleTopic");
 
 if (articleTopic == null) {
@@ -109,16 +112,29 @@ pageContext.setAttribute("articleTopic", articleTopic);
 
 
 				<c:forEach items="${articles}" var="article">
-
+					<br>
 					<h3>${article.title}</h3>
 					<h5>${article.date}</h5>
 					<h5>Read: ${article.visit}</h5>
+					<br clear="all">
+					<div>
+						<img src="image/${article.id}.jpg" alt="article image"
+							ALIGN="right" width="200px">
+					</div>
+					<br>
+
+
 					<h5>${article.head}</h5>
 					<p>${article.lead}</p>
 					<p>
-						<a href="ArticleServlet?articleId=${article.id }">read more</a> |
-						<a href="CartServlet?action=ADD&articleId=${article.id }">read later</a>
+						<a href="ArticleServlet?articleId=${article.id }">read more</a>
+
+						<c:if test="${me != null }"> |
+						<a href="CartServlet?action=ADD&articleId=${article.id }">read
+								later</a>
+						</c:if>
 					</p>
+					<br clear="all">
 
 					<%-- <c:choose>
 

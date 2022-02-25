@@ -68,7 +68,7 @@ public class RegisterServlet extends HttpServlet {
 				session.setAttribute("me", username);
 				session.setAttribute("first", firstname);
 				session.setAttribute("last", lastname);
-				response.sendRedirect("HomeServlet.jsp");
+				response.sendRedirect("HomeServlet");
 			} else {
 				String alertMsgReg = "Sorry, your username or email is already registered. Please choose a different one.";
 				session.setAttribute("alertMsgReg", alertMsgReg);

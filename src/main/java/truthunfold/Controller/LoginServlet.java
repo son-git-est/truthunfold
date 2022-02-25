@@ -73,6 +73,7 @@ public class LoginServlet extends HttpServlet {
 				switch (action) {
 
 				case ("logout"):
+					session.setAttribute("reader", null);
 					session.setAttribute("me", null);
 					session.setAttribute("first", null);
 					session.setAttribute("last", null);

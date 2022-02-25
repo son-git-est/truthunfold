@@ -29,6 +29,9 @@ public class ArticleServletBO extends HttpServlet {
 	private final static String GET_ALL_TOPICS = "view_topics";
 	private final static String DELETE_ARTICLE = "delete_article";
 	private final static String UPDATE_ARTICLE = "update_article";
+	private final static String DELETE_TOPIC = "delete_topic";
+	private final static String ADD_TOPIC = "add_topic";
+	private final static String EDIT_TOPIC = "edit_topic";
 
 	public ArticleServletBO() {
 		super();
@@ -38,6 +41,7 @@ public class ArticleServletBO extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String action = request.getParameter("action");
+		System.out.println(action);
 		String currentPage = request.getParameter("currentPage");
 		if (currentPage != null) {
 
@@ -87,15 +91,60 @@ public class ArticleServletBO extends HttpServlet {
 					dispatcher.forward(request, response);
 					break;
 				}
-				
-				case GET_ALL_TOPICS:{
-					
+
+				case GET_ALL_TOPICS: {
+
 					List<Topic> topics = articleDAO.getAllTopics();
-					
+
 					request.setAttribute("topics", topics);
 
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/topicsBO.jsp");
 					dispatcher.forward(request, response);
+					break;
+				}
+
+				case DELETE_TOPIC: {
+
+					if (request.getParameter("articleTopic") != null) {
+						String topic = request.getParameter("articleTopic");
+						articleDAO.deleteTopic(topic);
+
+						String msg = "Topic " + topic + " has been deleted along with all the articles!";
+						request.setAttribute("msg", msg);
+						RequestDispatcher dispatcher = request.getRequestDispatcher("/articlesBO.jsp");
+						dispatcher.forward(request, response);
+					}
+					break;
+				}
+
+				case ADD_TOPIC: {
+
+					if (request.getParameter("topicName") != null) {
+						String topic = request.getParameter("topicName");
+						articleDAO.addnewTopic(topic);
+						System.out.println(topic);
+						String msg = "Topic " + topic + " has been added!";
+						request.setAttribute("msg", msg);
+						RequestDispatcher dispatcher = request
+								.getRequestDispatcher("ArticleServletBO?action=view_topics");
+						dispatcher.forward(request, response);
+					}
+					break;
+				}
+
+				case EDIT_TOPIC: {
+
+					if (request.getParameter("id") != null) {
+						String topic = request.getParameter("topicName");
+						int id = Integer.parseInt(request.getParameter("id"));
+						articleDAO.editTopic(id, topic);
+						// System.out.println(topic);
+						// String msg = "Topic " + topic + " has been added!";
+						// request.setAttribute("msg", msg);
+						RequestDispatcher dispatcher = request
+								.getRequestDispatcher("ArticleServletBO?action=view_topics");
+						dispatcher.forward(request, response);
+					}
 					break;
 				}
 

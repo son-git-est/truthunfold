@@ -108,14 +108,24 @@ pageContext.setAttribute("articleTopic", articleTopic);
 					<c:choose>
 
 						<c:when test="${fn:toLowerCase(articleTopic) eq 'all'}">
-							<h3>${article.title}</h3>
-							<h5>${article.date}</h5>
+							
+							
+							<div>
+								<img src="image/${article.id}.jpg" alt="article image"
+									ALIGN="right" width="200px">
+							</div>
 
+
+							<br>
+							<h3>${article.title}</h3>
+							<h5>Id: ${article.id }</h5>
+							<h5>${article.date}</h5>
 							<p>
 								<a href="ArticleImageUploadServlet?articleId=${article.id }">view</a>
 								| <a
 									href="ArticleServletBO?action=delete_article&articleId=${article.id }">delete</a>
 							</p>
+							<br clear="all">
 
 
 						</c:when>

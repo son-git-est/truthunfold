@@ -17,6 +17,7 @@ import truthunfold.Entity.Reader;
 public class ReaderServletBO extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final static String DELETE_READER = "delete_reader";
+	private final static String VIEW_READER = "view_reader";
 	ReaderDAO readerDAO = new ReaderDAO();
 
 	public ReaderServletBO() {
@@ -30,26 +31,43 @@ public class ReaderServletBO extends HttpServlet {
 		List<Reader> readers = null;
 		String action = request.getParameter("action");
 		String readerId = request.getParameter("readerId");
-
+		RequestDispatcher dispatcher = request.getRequestDispatcher("reader-list.jsp");
 		try {
 
 			if (action != null && readerId != null) {
 
-				readerDAO.deleteReader(Integer.parseInt(readerId));
+				switch (action) {
+				case DELETE_READER:
+					readerDAO.deleteReader(Integer.parseInt(readerId));
 
-				readers = readerDAO.getAllReaders();
+					readers = readerDAO.getAllReaders();
 
-				request.setAttribute("readers", readers);
+					request.setAttribute("readers", readers);
 
-				RequestDispatcher dispatcher = request.getRequestDispatcher("reader-list.jsp");
-				dispatcher.forward(request, response);
+					dispatcher = request.getRequestDispatcher("reader-list.jsp");
+					dispatcher.forward(request, response);
+					break;
+				case VIEW_READER:
+
+					Reader reader = readerDAO.getReader(Integer.parseInt(readerId));
+
+					request.setAttribute("reader", reader);
+
+					dispatcher = request.getRequestDispatcher("reader-detail.jsp");
+					dispatcher.forward(request, response);
+					break;
+
+				default:
+					break;
+
+				}
 
 			} else {
 				readers = readerDAO.getAllReaders();
 
 				request.setAttribute("readers", readers);
 
-				RequestDispatcher dispatcher = request.getRequestDispatcher("reader-list.jsp");
+				dispatcher = request.getRequestDispatcher("reader-list.jsp");
 				dispatcher.forward(request, response);
 			}
 		} catch (Exception e) {
